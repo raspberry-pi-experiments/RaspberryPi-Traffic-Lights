@@ -2,6 +2,7 @@
 from argparse import ArgumentParser, ArgumentTypeError
 import logging
 from input_feeder import InputFeeder
+from objects_detection import ObjectsDetection 
 
 class TrafficLights:
 
@@ -23,7 +24,9 @@ class TrafficLights:
 
     def run(self, args):
         inputFeeder = InputFeeder(args.input)
-
+        i = 0
+        objectsDetection = ObjectsDetection()
+        frame = None
         while self.execute:
             try:
                 frame = next(inputFeeder.next_batch())
@@ -32,9 +35,13 @@ class TrafficLights:
                 break
             if frame is None:
                 break
+            objectsDetection.inputs(frame)
+            objectsDetection.wait()
+            outputs = objectsDetection.outputs()
             print(frame)
+            i = i + 1
            
-
+        print(i)
         inputFeeder.close()
         
 
